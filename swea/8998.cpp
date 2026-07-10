@@ -45,7 +45,6 @@ int problem()
 
 int main(int argc, char **argv)
 {
-    freopen("input.txt", "r", stdin);
     int T;
     cin >> T;
 
