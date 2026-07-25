@@ -4,89 +4,79 @@
 
 using namespace std;
 
-struct Log
-{
-    int start;
-    int end;
-};
+vector<pair<int, int>> logs;
 
-struct Bracket
+struct Parenthesis
 {
     int index;
-    char ch;
+    char value;
 };
 
-vector<Log> logs;
-
-char flip(char ch)
+char flip(char parenthesis)
 {
-    return ch == '(' ? ')' : '(';
+    return parenthesis == '(' ? ')' : '(';
 }
 
 int problem()
 {
-    vector<Bracket> b_stack;
-
-    int L;
+    int L, flip_count = 0;
     string S;
-
-    scanf("%d", &L);
-    S.reserve(L);
-    cin >> S;
+    cin >> L >> S;
 
     if (L % 2 != 0)
         return -1;
 
+    vector<Parenthesis> p_stack;
     for (int i = 0; i < S.size(); i++)
     {
-        if (b_stack.empty())
+        Parenthesis current = Parenthesis{i, S[i]};
+        if (p_stack.empty())
         {
-            b_stack.push_back(Bracket{i, S[i]});
+            p_stack.push_back(current);
             continue;
         }
 
-        Bracket &top = b_stack.back();
-        Bracket current = Bracket{i, S[i]};
-        if (top.ch != current.ch)
-        {
-            if (top.ch == '(')
-                b_stack.pop_back();
-            else
-            {
-                for (Bracket &b : b_stack)
-                    b.ch = flip(b.ch);
-
-                // writes a flip log
-                logs.push_back(Log{b_stack[0].index, b_stack.back().index});
-                if (logs.size() > 10)
-                    break;
-                b_stack.push_back(current);
-            }
-        }
+        Parenthesis &back = p_stack.back();
+        if (current.value == ')' && back.value == '(')
+            p_stack.pop_back();
         else
-            b_stack.push_back(current);
+            p_stack.push_back(current);
     }
 
-    if (b_stack.size() > 0)
+    if (p_stack.empty())
+        return flip_count;
+
+    int left = -1, right = -1;
+    if (p_stack[0].value != p_stack.back().value)
     {
-        int st_i, end_i;
-        if (b_stack.back().ch == '(')
+        right = 0;
+        for (int i = 0; i < p_stack.size(); i++)
         {
-            st_i = b_stack.size() / 2;
-            end_i = b_stack.size() - 1;
+            if (p_stack[0].value == p_stack[i].value)
+                right++;
         }
-        else
-        {
-            st_i = 0;
-            end_i = b_stack.size() / 2 - 1;
-        }
-        logs.push_back(Log{b_stack[st_i].index, b_stack[end_i].index});
+
+        for (int i = 0; i < right; i++)
+            p_stack[i].value = flip(p_stack[i].value);
+        logs.push_back(make_pair(p_stack[0].index, p_stack[right - 1].index));
+        flip_count++;
     }
 
-    if (logs.size() > 10)
-        return -1;
+    if (p_stack.back().value == ')')
+    {
+        left = 0;
+        right = p_stack.size() / 2 - 1;
+    }
+    else
+    {
+        left = p_stack.size() / 2;
+        right = p_stack.size() - 1;
+    }
 
-    return logs.size();
+    logs.push_back(make_pair(p_stack[left].index, p_stack[right].index));
+    flip_count++;
+
+    return flip_count;
 }
 
 int main()
@@ -94,15 +84,22 @@ int main()
     freopen("input.txt", "r", stdin);
 
     int TC;
-    scanf("%d", &TC);
+    cin >> TC;
 
     for (int tc = 0; tc < TC; tc++)
     {
         logs.clear();
-        int result = problem();
-        printf("#%d %d\n", tc + 1, result);
-        for (Log log : logs)
-            printf("%d %d\n", log.start, log.end);
+
+        int cnt = problem();
+        if (cnt > 10)
+        {
+            printf("#%d %d\n", tc + 1, -1);
+            continue;
+        }
+
+        printf("#%d %d\n", tc + 1, cnt);
+        for (pair<int, int> log : logs)
+            printf("%d %d\n", log.first, log.second);
     }
 
     return 0;
