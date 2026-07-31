@@ -3,14 +3,14 @@
 
 using namespace std;
 
-pair<int, int> problem()
+void problem()
 {
     int eq1, eq2, A, B;
     scanf("%d %d", &eq1, &eq2);
-    A = (eq1 + eq2) / 2;
-    B = eq1 - A;
+    A = (eq1 + eq2) >> 1;
+    B = (eq1 - eq2) >> 1;
 
-    return make_pair(A, B);
+    printf("%d %d\n", A, B);
 }
 
 int main()
@@ -20,10 +20,7 @@ int main()
     scanf("%d", &T);
 
     for (int t = 0; t < T; t++)
-    {
-        pair<int, int> res = problem();
-        printf("%d %d\n", res.first, res.second);
-    }
+        problem();
 
     return 0;
 }
