@@ -8,7 +8,7 @@ using namespace std;
 
 struct Node
 {
-    int id;
+    int index;
     int weight;
     bool operator<(const Node &other) const
     {
@@ -41,18 +41,18 @@ int problem()
         Node node = min_heap.top();
         min_heap.pop();
 
-        if (node.id == N)
+        if (node.index == N)
             return node.weight;
 
         for (int i = 0; i <= N; i++)
         {
-            if (i == node.id)
+            if (i == node.index)
                 continue;
-            if (graph[node.id][i] == -1)
+            if (graph[node.index][i] == -1)
                 continue;
-            if (node.weight + graph[node.id][i] < visited[i])
+            if (node.weight + graph[node.index][i] < visited[i])
             {
-                visited[i] = node.weight + graph[node.id][i];
+                visited[i] = node.weight + graph[node.index][i];
                 min_heap.push(Node{i, visited[i]});
             }
         }
