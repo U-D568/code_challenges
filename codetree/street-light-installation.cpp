@@ -10,7 +10,7 @@ using namespace std;
 
 struct Node
 {
-	int id;
+	int index;
 	int position;
 	int prev_id;
 	int next_id;
@@ -39,28 +39,28 @@ void add_light()
 	{
 		node = node_heap.top();
 		node_heap.pop();
-		if (!node_list[node.id].is_active)
+		if (!node_list[node.index].is_active)
 			continue;
-		if (node_list[node.id].prev_id == -1)
+		if (node_list[node.index].prev_id == -1)
 			continue;
-		if (node_list[node.id].prev_id != node.prev_id)
+		if (node_list[node.index].prev_id != node.prev_id)
 			continue;
 		break;
 	}
 
-	node = node_list[node.id];
+	node = node_list[node.index];
 	int prev_pos = node_list[node.prev_id].position;
 	int new_pos = prev_pos + (node.position - prev_pos + 1) / 2;
 	Node new_node = {
 		(int)node_list.size(),
 		new_pos,
 		node.prev_id,
-		node.id,
+		node.index,
 		new_pos - prev_pos,
 		true };
-	node_list[node.prev_id].next_id = new_node.id;
-	node_list[node.id].distance = node.position - new_pos;
-	node_list[node.id].prev_id = new_node.id;
+	node_list[node.prev_id].next_id = new_node.index;
+	node_list[node.index].distance = node.position - new_pos;
+	node_list[node.index].prev_id = new_node.index;
 
 	node_list.push_back(new_node);
 	node_heap.push(new_node);
@@ -118,7 +118,7 @@ void init_ligts()
 		node_heap.push(new_node);
 	}
 
-	last_id = node_list[(int)node_list.size() - 1].id;
+	last_id = node_list[(int)node_list.size() - 1].index;
 }
 
 int cal_efficiency()
@@ -131,19 +131,19 @@ int cal_efficiency()
 	{
 		node = node_heap.top();
 
-		if (!node_list[node.id].is_active)
+		if (!node_list[node.index].is_active)
 		{
 			node_heap.pop();
 			continue;
 		}
 
-		if (node_list[node.id].prev_id == -1)
+		if (node_list[node.index].prev_id == -1)
 		{
 			node_heap.pop();
 			continue;
 		}
 
-		if (node_list[node.id].prev_id != node.prev_id)
+		if (node_list[node.index].prev_id != node.prev_id)
 		{
 			node_heap.pop();
 			continue;
