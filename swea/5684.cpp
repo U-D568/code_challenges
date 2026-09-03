@@ -16,7 +16,7 @@ struct Edge
  
 struct Node
 {
-    int id;
+    int index;
     int weight;
     bool operator < (const Node &other) const {
         return this->weight > other.weight;
@@ -57,7 +57,7 @@ int problem()
             Node node = min_heap.top();
             min_heap.pop();
  
-            for (Edge edge : graph[node.id])
+            for (Edge edge : graph[node.index])
             {
                 int new_weight = dist[edge.from] + edge.weight;
                 if (dist[edge.to] <= new_weight)
